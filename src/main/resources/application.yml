@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: readDB
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
+
+logging:
+  level:
+    org:
+      springframework: INFO
+
+aws-properties:
+  access-key: ${AWS_ACCESS_KEY:zfDig3aqbdHN/mM/t/Dy/NQesyMf2pz/9tC1mprz}
+  secret-key: ${AWS_SECRET_KEY}
+  bucket-name: ${AWS_BUCKET_NAME}
+  region: ${AWS_REGION}
