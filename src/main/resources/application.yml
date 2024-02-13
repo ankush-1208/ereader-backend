@@ -18,7 +18,7 @@ logging:
       springframework: INFO
 
 aws-properties:
-  access-key: ${AWS_ACCESS_KEY:zfDig3aqbdHN/mM/t/Dy/NQesyMf2pz/9tC1mprz}
+  access-key: ${AWS_ACCESS_KEY}
   secret-key: ${AWS_SECRET_KEY}
   bucket-name: ${AWS_BUCKET_NAME}
   region: ${AWS_REGION}
