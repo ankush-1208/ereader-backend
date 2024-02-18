@@ -2,11 +2,16 @@ server:
   port: 8080
 
 spring:
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: readDB
+  datasource:
+    url: jdbc:postgresql://localhost:5432/leafDB
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
   servlet:
     multipart:
       max-file-size: 15MB

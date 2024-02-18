@@ -6,14 +6,15 @@ import org.springframework.http.HttpStatus;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class BadRequestException extends RuntimeException {
+public class UnauthorizedException extends RuntimeException {
 
-    private String statusCode;
+    private HttpStatus statusCode;
 
     private String errorMessage;
 
-    public BadRequestException(String errorMessage) {
+    public UnauthorizedException(String errorMessage) {
         super(errorMessage);
-        this.statusCode = HttpStatus.BAD_REQUEST.name();
+        this.statusCode = HttpStatus.UNAUTHORIZED;
     }
+
 }
