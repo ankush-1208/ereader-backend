@@ -3,17 +3,15 @@ package com.ankush.readapp.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @NoArgsConstructor
 @Data
-public class BookUploadResponse {
+public class BookMetadata {
 
-    private String id;
+    private String author;
 
-    private String bookTitle;
+    private String title;
 
-    private String authorName;
+    private String language;
 
     private String genre;
 
