@@ -1,5 +1,6 @@
 package com.ankush.readapp.entity;
 
+import com.ankush.readapp.enums.FileType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -21,12 +22,20 @@ public class Book {
     @Id
     private String id;
 
-    private String name;
+    private String title;
+
+    private String author;
+
+    private String language;
+
+    private String genre;
 
     private String fileName;
 
     private String userId;
 
-    private Date uploadDate;
+    private FileType fileType;
+
+    private Date createdDate;
 
 }

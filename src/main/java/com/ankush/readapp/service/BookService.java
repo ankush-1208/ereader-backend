@@ -3,11 +3,12 @@ package com.ankush.readapp.service;
 import com.ankush.readapp.dto.BookUploadResponse;
 import com.ankush.readapp.dto.UserDetails;
 import com.ankush.readapp.entity.Book;
+import com.ankush.readapp.enums.FileType;
 import com.ankush.readapp.exception.UnauthorizedException;
+import com.ankush.readapp.factory.FileHandlerFactory;
 import com.ankush.readapp.mapper.BookMapper;
 import com.ankush.readapp.repository.BookRepository;
 import com.ankush.readapp.utils.Utils;
-import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private FileHandlerFactory fileHandlerFactory;
+
     /**
      * Uploads the file to server and initializes an entry in the database
      *
@@ -33,18 +37,24 @@ public class BookService {
      */
     public BookUploadResponse processUpload(MultipartFile file, String bookTitle, UserDetails userDetails) {
         log.info("Processing file upload");
+        var bookId = Utils.generateId();
+
+        // Upload the file to server
+        var fileName = s3FileServer.uploadFileToS3(file, bookId);
         var book = Book.builder()
                 .id(Utils.generateId())
-                .name(Utils.getOrDefault(bookTitle, file.getOriginalFilename()))
+                .title(Utils.getOrDefault(bookTitle, file.getOriginalFilename()))
                 .userId(userDetails.getUserId())
-                .uploadDate(Utils.getCurrentDate())
+                .fileType(FileType.getFileType(file.getContentType()))
+                .createdDate(Utils.getCurrentDate())
                 .build();
-        // Upload the file to server
-        var fileName = s3FileServer.uploadFileToS3(file, book.getId());
         book.setFileName(fileName);
+        var bookMetadata = fileHandlerFactory.getFileHandler(book.getFileType()).extractMetadata(file);
+        BookMapper.INSTANCE.toEntity(bookId, fileName, bookMetadata);
         bookRepository.save(book);
         return BookMapper.INSTANCE.toDto(book);
     }
+
 
     public String fetchBookUrl(String id, UserDetails userDetails) {
         var book = bookRepository.findByIdAndUserId(id, userDetails.getUserId()).orElseThrow(

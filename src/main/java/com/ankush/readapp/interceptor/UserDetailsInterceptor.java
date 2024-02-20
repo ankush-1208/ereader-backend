@@ -1,4 +1,4 @@
-package com.ankush.readapp.filter;
+package com.ankush.readapp.interceptor;
 
 import com.ankush.readapp.dto.UserDetails;
 import com.ankush.readapp.utils.Utils;
