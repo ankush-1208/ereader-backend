@@ -7,6 +7,8 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
+import lombok.experimental.NonFinal;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -21,7 +23,7 @@ public class FileInterceptor implements HandlerInterceptor {
     private static final List<String> contentTypes = List.of("application/pdf", "application/epub+zip");
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
         var isValidFileUploadMethod = handler instanceof HandlerMethod handlerMethod &&
                 handlerMethod.hasMethodAnnotation(FileUploadEndpoint.class);
         if (isValidFileUploadMethod) {
