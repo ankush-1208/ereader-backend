@@ -15,6 +15,7 @@ import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.nio.file.Paths;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -34,6 +35,7 @@ public class S3FileServer {
     @Value("${aws-properties.bucket-name}")
     private String bucketName;
 
+
     @PostConstruct
     public void initS3Client() {
         var awsCredentials = AwsBasicCredentials.create(accessKey, secretKey);
@@ -43,6 +45,7 @@ public class S3FileServer {
                 .build();
     }
 
+
     /**
      * Uploads the book to S3 file server
      *
@@ -50,7 +53,7 @@ public class S3FileServer {
      * @param bookId The unique id associated with the book
      * @return The filename of the uploaded file
      */
-    public String  uploadFileToS3(MultipartFile file, String bookId) {
+    public String uploadFileToS3(MultipartFile file, String bookId) {
         log.info("Uploading file to S3 file server having fileName: {}, bookId: {}", file.getOriginalFilename(), bookId);
         try {
             var fileName = generateFileName(file.getOriginalFilename(), bookId);
@@ -67,6 +70,7 @@ public class S3FileServer {
         }
     }
 
+
     public String fetchFileFromS3(String fileName) {
         log.info("Fetching file: {} from S3 File server", fileName);
         try {
@@ -80,6 +84,7 @@ public class S3FileServer {
             throw new RuntimeException("Failed to fetch file");
         }
     }
+
 
     private String generateFileName(String fileName, String bookId) {
         return Paths.get(bookId, fileName.toLowerCase()).toString();

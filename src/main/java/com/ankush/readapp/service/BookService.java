@@ -1,11 +1,11 @@
 package com.ankush.readapp.service;
 
 import com.ankush.readapp.dto.BookUploadResponse;
-import com.ankush.readapp.dto.UserDetails;
 import com.ankush.readapp.entity.Book;
 import com.ankush.readapp.enums.FileType;
 import com.ankush.readapp.exception.UnauthorizedException;
 import com.ankush.readapp.factory.FileHandlerFactory;
+import com.ankush.readapp.helper.UserDetailsHelper;
 import com.ankush.readapp.mapper.BookMapper;
 import com.ankush.readapp.repository.BookRepository;
 import com.ankush.readapp.utils.Utils;
@@ -32,19 +32,18 @@ public class BookService {
      *
      * @param file The file the user uploaded
      * @param bookTitle title of the book
-     * @param userDetails user info
      * @return The id of the file uploaded
      */
-    public BookUploadResponse processUpload(MultipartFile file, String bookTitle, UserDetails userDetails) {
+    public BookUploadResponse processUpload(MultipartFile file, String bookTitle) {
         log.info("Processing file upload");
         var bookId = Utils.generateId();
-
+        var userDetails = UserDetailsHelper.getCurrentUserDetails();
         // Upload the file to server
         var fileName = s3FileServer.uploadFileToS3(file, bookId);
         var book = Book.builder()
                 .id(Utils.generateId())
                 .title(Utils.getOrDefault(bookTitle, file.getOriginalFilename()))
-                .userId(userDetails.getUserId())
+                .userId(userDetails.getId())
                 .fileType(FileType.getFileType(file.getContentType()))
                 .createdDate(Utils.getCurrentDate())
                 .build();
@@ -56,8 +55,9 @@ public class BookService {
     }
 
 
-    public String fetchBookUrl(String id, UserDetails userDetails) {
-        var book = bookRepository.findByIdAndUserId(id, userDetails.getUserId()).orElseThrow(
+    public String fetchBookUrl(String id) {
+        var userDetails = UserDetailsHelper.getCurrentUserDetails();
+        var book = bookRepository.findByIdAndUserId(id, userDetails.getId()).orElseThrow(
                 () -> new UnauthorizedException("This book does not belong to the user")
         );
         return s3FileServer.fetchFileFromS3(book.getFileName());

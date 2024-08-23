@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/leafDB
+    url: jdbc:postgresql://localhost:5432/leafdb
     username: ${POSTGRES_USERNAME:postgres}
     password: ${POSTGRES_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -27,3 +27,5 @@ aws-properties:
   secret-key: ${AWS_SECRET_KEY}
   bucket-name: ${AWS_BUCKET_NAME}
   region: ${AWS_REGION}
+
+encryption-key: ${ENCRYPTION_KEY}
